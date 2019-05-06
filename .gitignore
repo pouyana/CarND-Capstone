@@ -1,6 +1,9 @@
+._*
+.DS*
+traffic_light_bag_file.zip
 *.py[cod]
-
+venv
 build
+.idea/
 devel
-
 profile.tmp
