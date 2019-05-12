@@ -1,4 +1,9 @@
 <?xml version="1.0"?>
 <launch>
     <node pkg="tl_detector" type="tl_detector.py" name="tl_detector" output="screen" cwd="node"/>
+    <rosparam param="tl_graph_file">./light_classification/models/frozen_sim_mobile/frozen_inference_graph.pb</rosparam>
+    <rosparam param="tl_classes">[{"id":1, "name":"green"},{"id":2, "name":"red"},{"id":3, "name":"yellow"},{"id":4,
+        "name":"off"}]
+    </rosparam>
+    <rosparam param="tl_threshold">0.5</rosparam>
 </launch>
