@@ -1,3 +1,69 @@
+# CarND-Capstone
+
+This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car.
+
+## Individual Submission
+
+This is an individual submission for the project by:
+
+| Name | Email
+|---------------- | ---------------------|
+| Pouyan Azari | science(at)pouyanazari.com |
+
+## Workflow
+
+The project has 3 main parts:
+
+- The waypoints of the car are given and with help of PID controller and low pass the car is kept on the waypoints.
+- There is a classification algorithm that finds the traffic light color.
+- Using the classification car stops at red light and starts again on green light.
+
+## Tensorflow
+
+The Hardware specs for the Tensorflow training:
+
+|OS| CPU | RAM | GPU
+|---|---------|------- | ---------------------|
+|Linux| Intel Xeon E5 3.4GHZ | 32 GB | Nvidia 750 TI (2GB Memory) |
+
+To have the tensorflow classify the traffic sign the images that are created kindly by 'coldKnight' are used [link](https://github.com/coldKnight/TrafficLight_Detection-TensorFlowAPI).
+
+The following models were tried:
+
+- Faster-RCNN
+- Inception SSD
+- MobileNet SSD
+
+### Faster-RCNN
+
+This model needed a very high (11GB GPU Memory) end graphic card that did not run on my specs.
+
+### Inception SSD
+
+This model worked with some tweaks (like lowering the batch size from 24 to 2 and making the images smaller). On the Virtual Machine it was still slow and training with this model was also very slow. It is more accurate than the MobileNet.
+
+### MobileNet SSD
+
+This was the suggested model from most of the people to use on low end machine. The batch size was still to high, so I lowered the number again to 2. This model was the only model that also gave acceptable latency on the VM. It is less accurate than the Faster-RCNN or MobileNet SSD, but the results are still acceptable for the simulation.
+
+## Running
+
+As it was suggested the VM runs the ROS with all the needed nodes. The simulator was running on the host it self. The machine for simulation had the following specs:
+
+|OS| CPU | RAM | GPU
+|--|---------|------- | ---------------------|
+|MacOS| 2,5 GHz Intel Core i7 | 16 GB | Intel Iris Pro 1536 MB |
+
+## Challenges
+
+There were several challenges in this project:
+
+- VirtualMachine/Simulator is too slow for having the images go through the tensorflow all the time. As I know the location of each traffic light I decided to have the images classifier 150 waypoints to the traffic light. With this the car has enough time to brake and the PID that is used to keep the car on the lane also works without latency (or minimal latency).
+
+- Creating the tensorflow model was a little bit hard because of the available tensorflow model on machine and tensorflow used by the simulator. So I needed the have the old tensorflow updated.
+
+## Udacity ReadMe
+
 This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
 
 Please use **one** of the two installation options, either native **or** docker installation.

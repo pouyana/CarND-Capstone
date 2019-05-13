@@ -60,7 +60,7 @@ class WaypointUpdater(object):
         This is the simple loop that is running with the waypoint updater.
         It simply publishes the closest waypoint in 50HZ rate.
         '''
-        rate = rospy.Rate(30)
+        rate = rospy.Rate(50)
         while not rospy.is_shutdown():
             if self.pose and self.base_waypoints:
                 closest_waypoint_idx = self.get_closest_waypoint_idx()
