@@ -132,7 +132,8 @@ There were several challenges in this project:
 
 - VirtualMachine/Simulator is too slow for having the images go through the tensorflow all the time. As I know the location of each traffic light I decided to have the images classifier 150 waypoints to the traffic light. With this the car has enough time to brake and the PID that is used to keep the car on the lane also works without latency (or minimal latency).
 
-- Creating the tensorflow model was a little bit hard because of the available tensorflow model on machine and tensorflow used by the simulator. So I needed the have the old tensorflow updated.
+- The version mismatch between my own tensorflow on training machine and the tensorflow of the VM made some problems, but I was able to solve them with some upgrade
+and downgrades.
 
 ## Udacity ReadMe
 
