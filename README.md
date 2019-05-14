@@ -26,7 +26,7 @@ The Hardware specs for the Tensorflow training:
 |---|---------|------- | ---------------------|
 |Linux| Intel Xeon E5 3.4GHZ | 32 GB | Nvidia 750 TI (2GB Memory) |
 
-To have the tensorflow classify the traffic sign the images that are created kindly by 'coldKnight' are used [link](https://github.com/coldKnight/TrafficLight_Detection-TensorFlowAPI).
+To have the tensorflow classify the traffic lights the dataset that is created kindly by 'coldKnight' are used [link](https://github.com/coldKnight/TrafficLight_Detection-TensorFlowAPI).
 
 The following models were tried:
 
@@ -45,6 +45,78 @@ This model worked with some tweaks (like lowering the batch size from 24 to 2 an
 ### MobileNet SSD
 
 This was the suggested model from most of the people to use on low end machine. The batch size was still to high, so I lowered the number again to 2. This model was the only model that also gave acceptable latency on the VM. It is less accurate than the Faster-RCNN or MobileNet SSD, but the results are still acceptable for the simulation.
+
+#### How Tensorflow training works
+
+This is the description of how the tensorflow model was built.
+
+- Install the pre-requirements
+
+```bash
+sudo apt-get install protobuf-compiler
+sudo pip install pillow
+sudo pip install lxml
+sudo pip install jupyter
+sudo pip install matplotlib
+```
+
+- The tensorflow model library should be downloaded:
+
+```bash
+git clone https://github.com/tensorflow/models.git
+cd tensorflow/models/research
+```
+
+- Configure the tensorflow model
+
+```bash
+protoc object_detection/protos/*.proto --python_out=.
+export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+```
+
+- Then the coco-zoo files for each of the pre-trained models should be fetched.
+
+```bash
+wget http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2018_01_28.tar.gz
+wget http://download.tensorflow.org/models/object_detection/ssd_inception_v2_coco_2018_01_28.tar.gz
+wget http://download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_2018_01_28.tar.gz
+```
+
+- Extract the models
+
+```bash
+tar -xvzf ssd_mobilenet_v1_coco_2018_01_28.tar.gz
+tar -xvzf ssd_inception_v2_coco_2018_01_28.tar.gz
+tar -xvzf faster_rcnn_resnet101_coco_2018_01_28.tar.gz
+```
+
+- The classified images were downloaded from [link](https://github.com/coldKnight/TrafficLight_Detection-TensorFlowAPI). Specifically from here: [Google Drive Link](https://drive.google.com/file/d/0B-Eiyn-CUQtxdUZWMkFfQzdObUE/view?usp=sharing) and save them inside the data folder.
+
+- Create tf records from the images. Tensorflow needs this records for the training:
+
+```bash
+python object_detection/dataset_tools/create_pascal_tf_record.py --data_dir=data/sim_training_data/sim_data_capture --output_path=sim_data.record
+```
+
+- use the configuration in `tensorflow_config` folder, and change to use the coco files
+
+```bash
+cp tensorflow_config tensorflow/model/research/config
+```
+
+- Run the training (The same done for each model)
+
+```bash
+python object_detection/train.py --pipeline_config_path=config/ssd_mobilenet_v1.config --train_dir=data/sim_training_data/sim_data_capture
+```
+
+- Freeze the result of training so it the created graph can be used by the ROS classifier.
+
+```bash
+python object_detection/export_inference_graph.py --pipeline_config_path=config/ssd_mobilenet_v1.config --trained_checkpoint_prefix=data/sim_training_data/sim_data_capture/model.ckpt-6000 --output_directory=model_frozen_sim/
+```
+
+- Use the created `.pb` file in your ROS classifier.
 
 ## Running
 
